@@ -73,6 +73,15 @@ exports.open = () => {
      readerWin.eval(readerJS.replace(`{{index}}`, selectedItem.index));
 }
 
+exports.openNative = () => {
+     if(!this.storage.length) return;
+
+     let selectedItem = this.getSelectedItem();
+     let contentURL = selectedItem.node.dataset.url;
+
+     require('electron').shell.openExternal(contentURL);
+}
+
 exports.addItem = (newItem, isNew = false) => {
      let itemNode = document.createElement('div');
      itemNode.setAttribute('class', 'read-item');

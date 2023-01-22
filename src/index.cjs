@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state');
 const readItem = require('./readItem.cjs');
+const appMenu = require('./menu.cjs');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -38,6 +39,8 @@ const createWindow = () => {
       contextIsolation: false
     },
   });
+
+  appMenu(mainWindow.webContents);
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, './renderer/main.html'));
