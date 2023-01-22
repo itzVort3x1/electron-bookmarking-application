@@ -12,7 +12,7 @@ if (require('electron-squirrel-startup')) {
 let mainWindow
 
 const tbLabel = new TouchBar.TouchBarLabel({
-  label: 'My Label'
+  label: 'Theme: '
 })
 
 const tbButton = new TouchBar.TouchBarButton({
@@ -29,9 +29,31 @@ const tbSpacer = new TouchBar.TouchBarSpacer({
   size: 'flexible'
 })
 
+const tbColorPicker = new TouchBar.TouchBarColorPicker({
+
+})
+
+const tbSlider = new TouchBar.TouchBarSlider({
+  label: 'Size',
+  minValue: 500,
+  maxValue: 1000,
+})
+
+// this is if you want a popover menu in your touch bar
+// const tbPopover = new TouchBar.TouchBarPopover({
+//   label: 'size',
+//   items: new TouchBar({
+//     items: [
+//       tbSlider
+//     ]
+//   })
+// })
+
 const touchBar = new TouchBar({
   items: [
     tbLabel,
+    tbColorPicker,
+    tbSlider,
     tbSpacer,
     tbButton
   ]
