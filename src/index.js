@@ -1,23 +1,42 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const windowStateKeeper = require('electron-window-state');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+let state;
+
 const createWindow = () => {
+
+  //state keeper
+  let state = windowStateKeeper({
+    defaultWidth: 500,
+    defaultHeight: 650
+  })
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 500,
+    height: 650,
+    x: state.x,
+    y: state.y,
+    minWidth: 350,
+    maxWidth: 650,
+    minHeight: 300,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true
     },
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
+  mainWindow.loadFile(path.join(__dirname, './renderer/main.html'));
+
+  // Manage Window state
+  state.manage(mainWindow);
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
