@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state');
+const readItem = require('./readItem.cjs');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -10,10 +11,10 @@ if (require('electron-squirrel-startup')) {
 let mainWindow
 
 ipcMain.on('new-item', (e, itemUrl) => {
-  setTimeout(() => {
-    e.sender.send('new-item-success', 'New Item from main process')
-  }, 2000);
-})
+  readItem(itemUrl, item => {
+    e.sender.send('new-item-success', item);
+  })
+});
 
 const createWindow = () => {
 
