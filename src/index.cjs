@@ -30,13 +30,19 @@ const tbSpacer = new TouchBar.TouchBarSpacer({
 })
 
 const tbColorPicker = new TouchBar.TouchBarColorPicker({
-
+  change: (color) => {
+    mainWindow.webContents.insertCSS(`body{background-color: ${color}}`);
+  }
 })
 
 const tbSlider = new TouchBar.TouchBarSlider({
   label: 'Size',
   minValue: 500,
   maxValue: 1000,
+  value: 500,
+  change: (value) => {
+    mainWindow.setSize(value, value, true);
+  }
 })
 
 // this is if you want a popover menu in your touch bar
@@ -76,7 +82,7 @@ const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 500,
-    height: 650,
+    height: 500,
     x: state.x,
     y: state.y,
     minWidth: 350,
