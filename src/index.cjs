@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, TouchBar } = require('electron');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state');
 const readItem = require('./readItem.cjs');
@@ -10,6 +10,32 @@ if (require('electron-squirrel-startup')) {
 }
 
 let mainWindow
+
+const tbLabel = new TouchBar.TouchBarLabel({
+  label: 'My Label'
+})
+
+const tbButton = new TouchBar.TouchBarButton({
+  label: 'Dev Tools',
+  icon: `${__dirname}/file-code-solid@2x.png`,
+  iconPosition: 'left',
+  backgroundColor: 'dodgerblue',
+  click: () => {
+    mainWindow.webContents.toggleDevTools();
+  }
+})
+
+const tbSpacer = new TouchBar.TouchBarSpacer({
+  size: 'flexible'
+})
+
+const touchBar = new TouchBar({
+  items: [
+    tbLabel,
+    tbSpacer,
+    tbButton
+  ]
+})
 
 ipcMain.on('new-item', (e, itemUrl) => {
   readItem(itemUrl, item => {
@@ -45,11 +71,16 @@ const createWindow = () => {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, './renderer/main.html'));
 
+  // set touch bar on mac
+  if(process.platform === 'darwin'){
+    mainWindow.setTouchBar(touchBar);
+  }
+
   // Manage Window state
   state.manage(mainWindow);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished
