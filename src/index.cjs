@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const windowStateKeeper = require('electron-window-state');
 
@@ -7,7 +7,13 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-let state;
+let mainWindow
+
+ipcMain.on('new-item', (e, itemUrl) => {
+  setTimeout(() => {
+    e.sender.send('new-item-success', 'New Item from main process')
+  }, 2000);
+})
 
 const createWindow = () => {
 
@@ -18,7 +24,7 @@ const createWindow = () => {
   })
 
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 500,
     height: 650,
     x: state.x,
@@ -27,8 +33,8 @@ const createWindow = () => {
     maxWidth: 650,
     minHeight: 300,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
     },
   });
 
